@@ -24,7 +24,6 @@ async function loadTransactions() {
     renderTransactions(allTransactions);
   } catch (error) {
     console.log(error.message);
-    alert(error.message);
   }
 }
 
@@ -50,7 +49,6 @@ async function sendTransaction(isAdding) {
     }
   } catch (error) {
     console.log(error.message);
-    alert(error.message);
   }
 }
 
@@ -61,19 +59,26 @@ function renderTransactions(data) {
 }
 
 async function createTransaction(transaction) {
-  // create record
-  const data = await API.newTransaction(transaction);
-  if (data) {
-    if (data.errors) {
-      return false;
+
+  if (navigator.onLine) {
+    // Online mode - attempt to create record
+    const data = await API.newTransaction(transaction);
+    if (data) {
+      if (data.errors) {
+        // Data errors - return without adding transaction
+        return false;
+      }
     }
-  }
-  else {
-    // create failed, so save in indexed db
+    else {
+      // create failed, so save in indexed db
+      await transactionsIDBStore.addPendingTransaction(transaction);
+    }
+  } else {
+    // Offline mode - so save in indexed db
     await transactionsIDBStore.addPendingTransaction(transaction);
   }
 
-  // add to beginning of current array of data
+  // Save successful, so add transaction to beginning of current array of data
   allTransactions.unshift(transaction);
   return true;
 }
@@ -97,14 +102,13 @@ async function processPendingTransactions() {
     }
   } catch (error) {
     console.log(error.message);
-    alert(error.message);
   }
 }
 
 async function initialize() {
   try {
-    // check if app is online before reading from db
     if (navigator.onLine) {
+      // If app is online, save pending transactions from db
       await processPendingTransactions();
     }
 
