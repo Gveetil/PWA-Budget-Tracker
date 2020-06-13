@@ -21,8 +21,6 @@ async function loadTransactions() {
       allTransactions = [...pendingTransactions.reverse(), ...allTransactions];
     }
 
-    console.log(allTransactions);
-
     renderTransactions(allTransactions);
   } catch (error) {
     console.log(error.message);

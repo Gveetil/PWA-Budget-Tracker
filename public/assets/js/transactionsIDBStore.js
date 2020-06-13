@@ -6,8 +6,14 @@ const transactionsIDBStore = {
     // Open the Pending Transactions database store
     async open() {
         // Open database when accessed for the first time
-        if (!currentDb)
+        if (!currentDb) {
             currentDb = await indexedDbUtilities.openDatabase();
+            currentDb.addEventListener('close', () => {
+                // Database closed unexpectedly - e.g. clearing web cache
+                console.log('Indexed Database connection closed!');
+                currentDb = null;
+            });
+        }
     },
 
     // Add a transaction to the Pending Transactions database store
