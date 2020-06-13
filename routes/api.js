@@ -1,34 +1,44 @@
 const router = require("express").Router();
 const Transaction = require("../models/transaction.js");
 
-router.post("/api/transaction", ({body}, res) => {
-  Transaction.create(body)
-    .then(dbTransaction => {
-      res.json(dbTransaction);
-    })
-    .catch(err => {
-      res.status(404).json(err);
-    });
+// Create a transaction
+router.post("/api/transaction", async (request, response) => {
+  try {
+    const { body } = request;
+
+    const result = await Transaction.create(body);
+    return response.json(result);
+
+  } catch (error) {
+    console.log(error);
+    return response.status(500).send(error.message);
+  }
 });
 
-router.post("/api/transaction/bulk", ({body}, res) => {
-  Transaction.insertMany(body)
-    .then(dbTransaction => {
-      res.json(dbTransaction);
-    })
-    .catch(err => {
-      res.status(404).json(err);
-    });
+// Bulk insert pending transactions
+router.post("/api/transaction/bulk", async (request, response) => {
+  try {
+    const { body } = request;
+
+    const result = await Transaction.insertMany(body);
+    return response.json(result);
+
+  } catch (error) {
+    console.log(error);
+    return response.status(500).send(error.message);
+  }
 });
 
-router.get("/api/transaction", (req, res) => {
-  Transaction.find({}).sort({date: -1})
-    .then(dbTransaction => {
-      res.json(dbTransaction);
-    })
-    .catch(err => {
-      res.status(404).json(err);
-    });
+// This path returns all the transactions entered in the system
+router.get("/api/transaction", async (request, response) => {
+  try {
+    const result = await Transaction.find({}).sort({ date: -1 });
+    return response.json(result);
+
+  } catch (error) {
+    console.log(error);
+    return response.status(500).send(error.message);
+  }
 });
 
 module.exports = router;
