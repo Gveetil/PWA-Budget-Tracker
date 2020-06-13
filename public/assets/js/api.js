@@ -1,6 +1,6 @@
 
 const API = {
-    async fetchTransactions(data, id) {
+    async fetchTransactions() {
         try {
             const response = await fetch("/api/transaction");
 

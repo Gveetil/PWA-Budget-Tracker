@@ -4,9 +4,9 @@ const Transaction = require("../models/transaction.js");
 // Create a transaction
 router.post("/api/transaction", async (request, response) => {
   try {
-    const { body } = request;
+    const { name, value, date } = request.body;
 
-    const result = await Transaction.create(body);
+    const result = await Transaction.create({ name, value, date });
     return response.json(result);
 
   } catch (error) {
@@ -18,9 +18,14 @@ router.post("/api/transaction", async (request, response) => {
 // Bulk insert pending transactions
 router.post("/api/transaction/bulk", async (request, response) => {
   try {
-    const { body } = request;
+    const transactions = request.body.map(item =>
+      ({
+        "name": item.name,
+        "value": item.value,
+        "date": item.date
+      }));
 
-    const result = await Transaction.insertMany(body);
+    const result = await Transaction.insertMany(transactions);
     return response.json(result);
 
   } catch (error) {
