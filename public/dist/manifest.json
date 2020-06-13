@@ -38,6 +38,6 @@
   "start_url": "/",
   "description": "Budget Tracker keeps track of your Budget, with or without an internet connection.",
   "background_color": "#dddddd",
-  "theme_color": "#ffffff",
-  "theme-color": "#ffffff"
+  "theme_color": "#317EFB",
+  "theme-color": "#317EFB"
 }
