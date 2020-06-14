@@ -46,4 +46,15 @@ router.get("/api/transaction", async (request, response) => {
   }
 });
 
+// Delete all the transactions in the system
+router.delete("/api/transaction/all", async (request, response) => {
+  try {
+    const result = await Transaction.remove({});
+    return response.json(result);
+  } catch (error) {
+    console.log(error);
+    return response.status(500).send(error.message);
+  }
+});
+
 module.exports = router;

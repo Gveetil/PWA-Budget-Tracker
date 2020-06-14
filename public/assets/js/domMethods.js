@@ -5,6 +5,7 @@ const nameEl = document.querySelector("#t-name");
 const amountEl = document.querySelector("#t-amount");
 const totalEl = document.querySelector("#total");
 const tbody = document.querySelector("#tbody");
+const clearButtonEl = document.querySelector(".clear-btn");
 
 const domMethods = {
 
@@ -63,6 +64,14 @@ const domMethods = {
         nameEl.value = "";
         amountEl.value = "";
         errorEl.textContent = "";
+    },
+
+    showClearButton() {
+        clearButtonEl.style.display = "";
+    },
+
+    hideClearButton() {
+        clearButtonEl.style.display = "none";
     },
 };
 

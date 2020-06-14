@@ -47,6 +47,21 @@ const API = {
             return false;
         }
     },
+
+    async deleteAllTransactions() {
+        try {
+            const response = await fetch(`/api/transaction/all`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" }
+            });
+
+            return await response.json();
+
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    },
 };
 
 export default API;

@@ -82,16 +82,6 @@ async function createTransaction(transaction) {
   return true;
 }
 
-document.querySelector("#add-btn").onclick = function () {
-  event.preventDefault();
-  sendTransaction(true);
-};
-
-document.querySelector("#sub-btn").onclick = function () {
-  event.preventDefault();
-  sendTransaction(false);
-};
-
 async function processPendingTransactions() {
   try {
     const pendingTransactions = await transactionsIDBStore.fetchPendingTransactions();
@@ -106,10 +96,11 @@ async function processPendingTransactions() {
 
 async function initialize() {
   try {
-    if (navigator.onLine) {
-      // If app is online, save pending transactions from db
-      await processPendingTransactions();
-    }
+    await updateOnlineStatus();
+    // if (navigator.onLine) {
+    //   // If app is online, save pending transactions from db
+    //   await processPendingTransactions();
+    // }
 
     await loadTransactions();
 
@@ -119,9 +110,53 @@ async function initialize() {
   }
 }
 
+async function clearTransactions() {
+  try {
+    const result = await API.deleteAllTransactions();
+    if (result) {
+      // Successful - Update UI 
+      await loadTransactions();
+    } else {
+      throw new Error("Server Error: Could not delete transactions!");
+    }
+  } catch (error) {
+    console.log(error.message);
+    alert(error.message);
+  }
+}
+
+async function updateOnlineStatus() {
+  if (navigator.onLine) {
+    console.log("online");
+    // If app is online, save pending transactions to the database
+    await processPendingTransactions();
+    console.log("saving transactions");
+    domMethods.showClearButton();
+  } else {
+    console.log("offline");
+    domMethods.hideClearButton();
+  }
+}
+
 // listen for app coming back online
-window.addEventListener("online", processPendingTransactions);
+window.addEventListener("online", updateOnlineStatus);
+window.addEventListener("offline", updateOnlineStatus);
 window.addEventListener('load', initialize);
 
 // re-load transactions on registration of a new controller
 navigator.serviceWorker.addEventListener('controllerchange', loadTransactions);
+
+document.querySelector("#add-btn").onclick = function () {
+  event.preventDefault();
+  sendTransaction(true);
+};
+
+document.querySelector("#sub-btn").onclick = function () {
+  event.preventDefault();
+  sendTransaction(false);
+};
+
+document.querySelector(".clear-btn").onclick = function () {
+  event.preventDefault();
+  clearTransactions();
+};
