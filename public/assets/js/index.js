@@ -4,11 +4,10 @@ import transactionChart from "./transactionChart";
 import domMethods from "./domMethods";
 import API from "./api";
 
-let allTransactions = [];
-
 async function loadTransactions() {
   try {
-    allTransactions = [];
+    let allTransactions = [];
+
     // Load database transactions - online
     const databaseTransactions = await API.fetchTransactions();
     if (databaseTransactions && databaseTransactions.length > 0) {
@@ -39,12 +38,12 @@ async function sendTransaction(isAdding) {
       }
 
       if (await createTransaction(transaction)) {
+        // Create successful, Update UI and fetch all transactions 
         domMethods.clearForm();
-        // re-run logic to populate ui with new record
-        renderTransactions(allTransactions);
+        await loadTransactions();
       }
       else {
-        domMethods.showErrorMessage("Missing Information");
+        domMethods.showErrorMessage("Incorrect Data!");
       }
     }
   } catch (error) {
@@ -64,22 +63,22 @@ async function createTransaction(transaction) {
     // Online mode - attempt to create record
     const data = await API.newTransaction(transaction);
     if (data) {
-      if (data.errors) {
-        // Data errors - return without adding transaction
+      // Data errors 
+      if (data.errors)
         return false;
-      }
+
+      // Create successful 
+      return true;
     }
     else {
       // create failed, so save in indexed db
       await transactionsIDBStore.addPendingTransaction(transaction);
+      return true;
     }
-  } else {
-    // Offline mode - so save in indexed db
-    await transactionsIDBStore.addPendingTransaction(transaction);
   }
 
-  // Save successful, so add transaction to beginning of current array of data
-  allTransactions.unshift(transaction);
+  // Offline mode - so save in indexed db
+  await transactionsIDBStore.addPendingTransaction(transaction);
   return true;
 }
 
