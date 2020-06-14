@@ -52,8 +52,9 @@ When the budget tracker application is opened, it loads up the current data in t
 * Here users can view the transactions in the system and the corresponding amounts.
 * The total displays the current account balance.
 * The Chart displays the cumulative / running account balance for each transaction. 
-* To add a new income, enter the transaction name and amount and click the Add Funds button.
-* To add an expense, enter the transaction name and amount and click the Subtract Funds button.
+* The `Clear All Transactions` button will delete all existing transactions in the system. This feature is only available when the application is online. 
+* To add a new income, enter the transaction name and amount and click the `Add Funds` button.
+* To add an expense, enter the transaction name and amount and click the `Subtract Funds` button.
 * Once a transaction is entered, it is displayed in the table and the chart and total values are updated to show the latest transaction.
 * If the data entered is incorrect, a validation message is displayed as below:<br><br>
 

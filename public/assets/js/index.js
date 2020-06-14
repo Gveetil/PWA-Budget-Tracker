@@ -97,13 +97,7 @@ async function processPendingTransactions() {
 async function initialize() {
   try {
     await updateOnlineStatus();
-    // if (navigator.onLine) {
-    //   // If app is online, save pending transactions from db
-    //   await processPendingTransactions();
-    // }
-
     await loadTransactions();
-
   }
   catch (error) {
     console.log(`Error Initializing: ${error.message}`);
@@ -127,13 +121,10 @@ async function clearTransactions() {
 
 async function updateOnlineStatus() {
   if (navigator.onLine) {
-    console.log("online");
     // If app is online, save pending transactions to the database
     await processPendingTransactions();
-    console.log("saving transactions");
     domMethods.showClearButton();
   } else {
-    console.log("offline");
     domMethods.hideClearButton();
   }
 }
